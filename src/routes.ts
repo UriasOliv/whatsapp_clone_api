@@ -1,11 +1,10 @@
-import { Router, Request, Response } from 'express'
+import { Router } from 'express'
 const routes = Router()
 
-// routes.use('/')
-// routes.use('/auth')
+import unprotectedRoutes from './routes/unprotected'
+import protectedRoutes from './routes/protected'
 
-routes.get('/', (req: Request, res: Response) => {
-	res.json('hi')
-})
+routes.use('/', unprotectedRoutes)
+routes.use('/auth', protectedRoutes)
 
 export default routes
