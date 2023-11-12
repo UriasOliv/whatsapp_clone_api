@@ -8,9 +8,12 @@ import { Server } from 'socket.io'
 import helmet from 'helmet'
 import cors from 'cors'
 import { errorMiddleware } from './middlewares/errorMiddleware'
+import RedisStore from 'connect-redis'
+import Redis from 'ioredis'
+
+const redisClient = new Redis()
 
 const app = express()
-
 const server = require('http').createServer(app)
 
 const io = new Server(server, {
@@ -34,6 +37,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(
 	session({
+		store: new RedisStore({ client: redisClient }),
 		secret: process.env.SECRET_TOKEN,
 		cookie: {
 			secure: process.env.ENVIRONMENT === 'production' ? true : 'auto',
