@@ -1,19 +1,24 @@
-import { NextFunction, Request, Response } from 'express'
-import * as loginServices from './services/loginService'
+import { Request, Response } from 'express'
+import loginServices from './services/loginService'
+import { LoginControllerTypes } from './types'
 
-import * as T from './types'
+class LoginController implements LoginControllerTypes.LoginController {
+	async doLogin(req: Request, res: Response) {
+		const response = await loginServices.autenticate(req.body, req)
 
-class LoginController {
-	async doLogin(req: Request, res: Response, next: NextFunction) {
-		await loginServices.autenticate(req.body as T.BodyDoLogin)
+		res.json(response)
+	}
 
-		res.json('Ok')
+	async checkToken(req: Request, res: Response) {
+		const response = await loginServices.checkToken(req)
+
+		res.json(response)
 	}
 
 	async register(req: Request, res: Response) {
-		await loginServices.signup(req.body as T.BodyDoLogin)
+		const response = await loginServices.signup(req.body, req)
 
-		res.json('Usuario cadastrado com sucesso!')
+		res.json(response)
 	}
 }
 

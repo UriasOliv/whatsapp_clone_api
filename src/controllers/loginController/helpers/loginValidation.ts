@@ -1,8 +1,8 @@
-import * as T from '../types'
+import { LoginControllerTypes } from '../types'
 import * as yupSchema from './yupSchema'
 import { Error_Unauthorized } from '@/handleSystemError'
 
-export async function validateLogin(data: T.BodyDoLogin) {
+export async function validateLogin(data: LoginControllerTypes.BodyDoLogin) {
 	try {
 		await yupSchema.formLoginSchema.validate(data)
 	} catch (error) {

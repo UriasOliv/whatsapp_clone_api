@@ -26,7 +26,7 @@ app.use(helmet())
 app.use(compression())
 app.use(
 	cors({
-		origin: '*',
+		origin: 'http://localhost:5173',
 		credentials: true,
 	}),
 )
@@ -36,9 +36,10 @@ app.use(
 	session({
 		secret: process.env.SECRET_TOKEN,
 		cookie: {
-			secure: process.env.ENVIRONMENT === 'production',
-			sameSite: process.env.ENVIRONMENT === 'production' ? 'none' : 'lax',
+			secure: process.env.ENVIRONMENT === 'production' ? true : 'auto',
+			sameSite: process.env.ENVIRONMENT === 'production' ? 'strict' : 'lax',
 			httpOnly: true,
+			maxAge: 120_000, // 1 * 60 * 60 * 1000
 		},
 		name: 'sid',
 		resave: false,
