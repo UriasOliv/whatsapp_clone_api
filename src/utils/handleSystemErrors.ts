@@ -19,9 +19,21 @@ export class Error_Unauthorized extends handleSystemErrors {
 	}
 }
 
+export class Error_Forbidden extends handleSystemErrors {
+	constructor(message: string) {
+		super(403, message)
+	}
+}
+
 export class Error_NotFound extends handleSystemErrors {
 	constructor(message: string) {
 		super(404, message)
+	}
+}
+
+export class Error_TooManyRequests extends handleSystemErrors {
+	constructor(message: string) {
+		super(429, message)
 	}
 }
 
