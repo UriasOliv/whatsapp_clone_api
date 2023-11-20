@@ -11,6 +11,7 @@ declare module 'http' {
 		session: import('express-session').Session & {
 			user: {
 				id: number
+				userid: string
 				username: string
 			}
 		}

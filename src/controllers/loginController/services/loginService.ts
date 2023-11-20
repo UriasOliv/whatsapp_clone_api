@@ -6,12 +6,14 @@ import pool from '@/database/index'
 import bcrypt from 'bcrypt'
 import { LoginControllerTypes } from '../types'
 
+import { v4 as uuidv4 } from 'uuid'
+
 class LoginService implements LoginControllerTypes.LoginService {
 	async autenticate(data: LoginControllerTypes.BodyDoLogin, req: Request) {
 		await validateLogin(data)
 
 		const user = await pool
-			.query('SELECT id, passhash FROM users WHERE username = $1', [
+			.query('SELECT id, passhash, userid FROM users WHERE username = $1', [
 				data.username,
 			])
 			.then((r) => r?.rows[0])
@@ -21,6 +23,7 @@ class LoginService implements LoginControllerTypes.LoginService {
 		if (bcrypt.compareSync(data.password, user.passhash)) {
 			req.session.user = {
 				id: user.id,
+				userid: user.userid,
 				username: data.username,
 			}
 
@@ -49,12 +52,13 @@ class LoginService implements LoginControllerTypes.LoginService {
 
 		if (existingUser.rowCount === 0) {
 			const newUserQuery = await pool.query(
-				'INSERT INTO users (username, passhash) VALUES ($1, $2) RETURNING id, username',
-				[data.username, bcrypt.hashSync(data.password, 10)],
+				'INSERT INTO users (username, passhash, userid) VALUES ($1, $2, $3) RETURNING id, userid, username',
+				[data.username, bcrypt.hashSync(data.password, 10), uuidv4()],
 			)
 
 			const objToken = {
 				id: newUserQuery.rows[0].id,
+				userid: newUserQuery.rows[0].userid,
 				username: data.username,
 			}
 
