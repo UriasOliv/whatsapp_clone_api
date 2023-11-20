@@ -10,6 +10,7 @@ import { errorMiddleware } from './middlewares/errorMiddleware'
 import sessionMiddleware from '@/middlewares/sessionMiddleware'
 import { createServer } from 'http'
 import autenticateUserMiddleware from './middlewares/autenticateUserMiddleware'
+import socketController from '@/controllers/socketController'
 
 const app = express()
 const server = createServer(app)
@@ -31,7 +32,22 @@ app.use(errorMiddleware)
 io.engine.use(sessionMiddleware.sessionConfig())
 io.use(autenticateUserMiddleware.checkSocketSession)
 io.on('connection', (socket) => {
-	const session = socket.request?.session
+	socket.use((__, next) =>
+		socket.request.session.reload((err) => {
+			if (err) {
+				socket.conn.close()
+				next(new Error('Usuario Não Autorizado'))
+			} else {
+				next()
+			}
+		}),
+	)
+
+	socket.on('add-friend', socketController.addFriend)
+
+	socket.on('disconnect', () => {
+		console.log('disconectado')
+	})
 })
 
 server.listen(80, () => {

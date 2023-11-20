@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { Error_Unauthorized } from '@/handleSystemError'
+import redisClient from '@/database/redis'
 
 class AutenticateUserMiddleware {
 	checkSession(req: Request, res: Response, next: NextFunction) {
@@ -11,9 +12,19 @@ class AutenticateUserMiddleware {
 	}
 
 	checkSocketSession(socket: any, next: any) {
-		if (socket.request.session?.user?.id == null) {
+		const sessionUser = socket.request.session?.user
+		if (sessionUser?.id == null) {
 			next(new Error('Não autorizado!'))
 		} else {
+			redisClient.hset(
+				`userid:${sessionUser.username}`,
+
+				'userid',
+				sessionUser.userid,
+
+				'username',
+				sessionUser.username,
+			)
 			next()
 		}
 	}
