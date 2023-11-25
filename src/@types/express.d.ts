@@ -6,15 +6,17 @@ declare namespace Express {
 	}
 }
 
+export interface SessionProps {
+	user: {
+		id: number
+		userid: string
+		username: string
+	}
+}
+
 declare module 'http' {
 	interface IncomingMessage {
-		session: import('express-session').Session & {
-			user: {
-				id: number
-				userid: string
-				username: string
-			}
-		}
+		session: import('express-session').Session & SessionProps
 	}
 }
 
