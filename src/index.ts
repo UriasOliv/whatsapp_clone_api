@@ -31,24 +31,7 @@ app.use(errorMiddleware)
 
 io.engine.use(sessionMiddleware.sessionConfig())
 io.use(autenticateUserMiddleware.checkSocketSession)
-io.on('connection', (socket) => {
-	socket.use((__, next) =>
-		socket.request.session.reload((err) => {
-			if (err) {
-				socket.conn.close()
-				next(new Error('Usuario Não Autorizado'))
-			} else {
-				next()
-			}
-		}),
-	)
-
-	socket.on('add-friend', socketController.addFriend)
-
-	socket.on('disconnect', () => {
-		console.log('disconectado')
-	})
-})
+io.on('connection', socketController.onConnection)
 
 server.listen(80, () => {
 	console.log('listening on port 80')

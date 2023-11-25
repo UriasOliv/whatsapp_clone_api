@@ -1,8 +1,18 @@
-import { responseOK, responseError, Response } from './helper/responseSocket'
+import { Socket } from 'socket.io'
+import socketEvents from './events'
 
 class SocketController implements SocketControllerTypes.SocketControllerClass {
-	addFriend(friendName: string, cb: (obj: Response) => void) {
-		cb(responseError('Teste Error'))
+	onConnection(socket: Socket) {
+		socket.use((__, next) =>
+			socket.request.session.reload((err) => {
+				if (err) {
+					socket.conn.close()
+					next(new Error('Usuario Não Autorizado'))
+				} else {
+					next()
+				}
+			}),
+		)
 	}
 }
 

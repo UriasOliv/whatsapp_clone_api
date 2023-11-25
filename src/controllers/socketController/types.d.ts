@@ -4,10 +4,8 @@ declare namespace SocketControllerTypes {
 	 */
 	class SocketControllerClass {
 		/**
-		 * Função responsavel por adicionar um amigo.
-		 * @param friendName Nome do usuario do usuario
-		 * @param cb Callback que envia responde o usuario
+		 * Essa função e responsavel por definir todos os eventos do socket que acabou de conectar
 		 */
-		addFriend(friendName: string, cb: (obj: any) => void)
+		onConnection(socket: Socket)
 	}
 }

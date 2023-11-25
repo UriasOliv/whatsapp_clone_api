@@ -19,6 +19,7 @@
     "paths": {
       "@/handleSystemError": ["utils/handleSystemErrors.ts"],
       "@/controllers/*": ["controllers/*"],
+      "@/customTypes/*": ["@types/*"],
       "@/utils/*": ["utils/*"],
       "@/database/*": ["database/*"],
       "@/middlewares/*": ["middlewares/*"],
