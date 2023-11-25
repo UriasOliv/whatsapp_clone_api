@@ -17,7 +17,7 @@ class SessionMiddleware {
 				secure: process.env.NODE_ENV === 'production' ? true : 'auto',
 				sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
 				httpOnly: true,
-				maxAge: 100_000, // 3 * 25 * 30 * 1000
+				maxAge: 3 * 60 * 60 * 1000,
 			},
 			name: 'sid',
 			resave: false,
