@@ -3,14 +3,15 @@ import { Error_BadRequest } from '@/handleSystemError'
 import { FriendControllerTypes } from '../types'
 import { SessionProps } from '@/customTypes/express'
 
+interface chatIdsFriendType {
+	person1: string | number
+	person2: string | number
+	chat_id: string
+}
+
 class FriendService implements FriendControllerTypes.FriendServiceClass {
 	async getFriends(session: SessionProps) {
-		const resultIds = await pool
-			.query(
-				'SELECT * FROM friend_list f WHERE f.person1 = $1 OR f.person2 = $1',
-				[session.user.id],
-			)
-			.then((r) => r?.rows)
+		const resultIds = await this.getChatIdsFriend(session)
 
 		const treatedIdsFriends = resultIds.map((idFriend) =>
 			idFriend.person1 == session.user.id ? idFriend.person2 : idFriend.person1,
@@ -21,6 +22,15 @@ class FriendService implements FriendControllerTypes.FriendServiceClass {
 				`SELECT username, userid FROM users WHERE id IN(${treatedIdsFriends.join(
 					',',
 				)})`,
+			)
+			.then((r) => r?.rows)
+	}
+
+	async getChatIdsFriend(session: SessionProps): Promise<chatIdsFriendType[]> {
+		return await pool
+			.query(
+				'SELECT * FROM friend_list f WHERE f.person1 = $1 OR f.person2 = $1',
+				[session.user.id],
 			)
 			.then((r) => r?.rows)
 	}
